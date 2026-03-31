@@ -2,7 +2,7 @@ name: Build & Deploy to Alibaba Cloud OSS
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   deploy:
@@ -24,9 +24,11 @@ jobs:
 
       - name: Install ossutil
         run: |
-          curl -o ossutil.zip https://gosspublic.alicdn.com/ossutil/install.sh
-          sudo bash ossutil.zip
-          ossutil version
+          curl -L -o ossutil https://gosspublic.alicdn.com/ossutil/1.7.21/ossutil-v1.7.21-linux-amd64.zip
+          unzip ossutil -d /tmp/ossutil
+          sudo cp /tmp/ossutil/ossutil-v1.7.21-linux-amd64/ossutil64 /usr/local/bin/ossutil
+          sudo chmod +x /usr/local/bin/ossutil
+          ossutil --version
 
       - name: Configure ossutil
         run: |
