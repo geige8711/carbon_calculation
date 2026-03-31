@@ -22,22 +22,23 @@ jobs:
       - name: Build
         run: yarn build
 
-      - name: Install ossutil
+      - name: Install aliyun CLI
         run: |
-          curl -L -o ossutil https://gosspublic.alicdn.com/ossutil/1.7.21/ossutil-v1.7.21-linux-amd64.zip
-          unzip ossutil -d /tmp/ossutil
-          sudo cp /tmp/ossutil/ossutil-v1.7.21-linux-amd64/ossutil64 /usr/local/bin/ossutil
-          sudo chmod +x /usr/local/bin/ossutil
-          ossutil --version
+          curl -Lo aliyun-cli.tgz https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz
+          tar xzf aliyun-cli.tgz
+          sudo mv aliyun /usr/local/bin/
+          aliyun version
 
-      - name: Configure ossutil
+      - name: Configure aliyun CLI
         run: |
-          ossutil config \
-            -e oss-cn-shanghai.aliyuncs.com \
-            -i ${{ secrets.OSS_ACCESS_KEY_ID }} \
-            -k ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+          aliyun configure set \
+            --profile default \
+            --mode AK \
+            --access-key-id ${{ secrets.OSS_ACCESS_KEY_ID }} \
+            --access-key-secret ${{ secrets.OSS_ACCESS_KEY_SECRET }} \
+            --region cn-shanghai
 
       - name: Upload to OSS
         run: |
-          ossutil cp -r -f dist/ oss://${{ secrets.OSS_BUCKET }}/ --update
+          aliyun oss sync dist/ oss://${{ secrets.OSS_BUCKET }}/ --force
           echo "Deployed to https://${{ secrets.OSS_BUCKET }}.oss-cn-shanghai.aliyuncs.com"
