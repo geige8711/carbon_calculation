@@ -1,0 +1,41 @@
+name: Build & Deploy to Alibaba Cloud OSS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: yarn build
+
+      - name: Install ossutil
+        run: |
+          curl -o ossutil.zip https://gosspublic.alicdn.com/ossutil/install.sh
+          sudo bash ossutil.zip
+          ossutil version
+
+      - name: Configure ossutil
+        run: |
+          ossutil config \
+            -e oss-cn-shanghai.aliyuncs.com \
+            -i ${{ secrets.OSS_ACCESS_KEY_ID }} \
+            -k ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+
+      - name: Upload to OSS
+        run: |
+          ossutil cp -r -f dist/ oss://${{ secrets.OSS_BUCKET }}/ --update
+          echo "Deployed to https://${{ secrets.OSS_BUCKET }}.oss-cn-shanghai.aliyuncs.com"
