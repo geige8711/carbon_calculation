@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import AppLayout from '@/components/layout/AppLayout';
 import HomePage from '@/pages/Home/HomePage';
@@ -8,7 +8,7 @@ import VehiclePage from '@/pages/Vehicle/VehiclePage';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Toaster position="top-center" />
       <Routes>
         <Route element={<AppLayout />}>
@@ -18,6 +18,6 @@ export default function App() {
           <Route path="/vehicle" element={<VehiclePage />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
