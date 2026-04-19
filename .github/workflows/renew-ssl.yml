@@ -1,0 +1,60 @@
+name: Renew SSL Certificate
+
+on:
+  schedule:
+    # Run on the 1st of every month at 3:00 AM UTC
+    - cron: '0 3 1 * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  renew:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install acme.sh
+        run: |
+          curl -s https://get.acme.sh | sh -s email=auto@yrhscc.com
+          source ~/.bashrc
+
+      - name: Issue/Renew certificate
+        env:
+          Ali_Key: ${{ secrets.OSS_ACCESS_KEY_ID }}
+          Ali_Secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+        run: |
+          ~/.acme.sh/acme.sh --issue --dns dns_ali -d www.yrhscc.com --server letsencrypt --force --keylength ec-256
+
+      - name: Install aliyun CLI
+        run: |
+          curl -Lo aliyun-cli.tgz https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz
+          tar xzf aliyun-cli.tgz
+          sudo mv aliyun /usr/local/bin/
+          aliyun version
+
+      - name: Configure aliyun CLI
+        run: |
+          aliyun configure set \
+            --profile default \
+            --mode AK \
+            --access-key-id ${{ secrets.OSS_ACCESS_KEY_ID }} \
+            --access-key-secret ${{ secrets.OSS_ACCESS_KEY_SECRET }} \
+            --region cn-shanghai
+
+      - name: Upload certificate to OSS
+        run: |
+          CERT_DIR=~/.acme.sh/www.yrhscc.com_ecc
+          cat > /tmp/cname-cert.xml << XMLEOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <BucketCnameConfiguration>
+            <Cname>
+              <Domain>www.yrhscc.com</Domain>
+              <CertificateConfiguration>
+                <Certificate>$(cat $CERT_DIR/fullchain.cer)</Certificate>
+                <PrivateKey>$(cat $CERT_DIR/www.yrhscc.com.key)</PrivateKey>
+                <Force>true</Force>
+              </CertificateConfiguration>
+            </Cname>
+          </BucketCnameConfiguration>
+          XMLEOF
+          aliyun oss bucket-cname --method put --item certificate oss://yrhscc-web /tmp/cname-cert.xml
+          echo "SSL certificate renewed and uploaded successfully"
