@@ -1,0 +1,12 @@
+{
+  "Version": "1",
+  "Statement": [
+    {
+      "Sid": "AllowPublicRead",
+      "Effect": "Allow",
+      "Action": ["oss:GetObject"],
+      "Principal": ["*"],
+      "Resource": ["acs:oss:*:*:yrhscc-web/*"]
+    }
+  ]
+}
