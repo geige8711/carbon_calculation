@@ -45,7 +45,7 @@ export default function ContactPage() {
       </section>
 
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* Left: Info cards */}
           <div className="space-y-5">
             {infoCards.map((card) => (
@@ -97,7 +97,7 @@ export default function ContactPage() {
                   placeholder="请输入您的单位名称"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     电话

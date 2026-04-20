@@ -75,7 +75,7 @@ export default function ProductionModal({ onClose, onResult }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={onClose}>
-      <div className="bg-white rounded-xl shadow-xl w-[900px] max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-[900px] mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         {/* Blue Header */}
         <div className="bg-[#1565A0] text-white px-6 py-4 rounded-t-xl">
           <h3 className="text-lg font-bold">氢气生产碳排放核算（详细）</h3>
@@ -159,7 +159,7 @@ export default function ProductionModal({ onClose, onResult }: Props) {
           {/* 电力消耗 */}
           <div className="border border-[#e0e0e0] rounded-lg p-5">
             <h3 className="text-[#1565A0] font-bold text-sm mb-3">电力消耗</h3>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <NumberInput label="年耗电量 (kWh/yr):" value={elecAmount} onChange={setElecAmount} max={1e12} />
               <SelectInput label="区域:" value={elecRegion} onChange={setElecRegion} options={ELECTRICITY_REGIONS} />
               <NumberInput label="自定义因子:" value={customElec} onChange={setCustomElec} max={1} decimals={8} />
@@ -170,7 +170,7 @@ export default function ProductionModal({ onClose, onResult }: Props) {
           {/* 热力消耗 */}
           <div className="border border-[#e0e0e0] rounded-lg p-5">
             <h3 className="text-[#1565A0] font-bold text-sm mb-3">热力消耗</h3>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <NumberInput label="年耗热量 (MJ/yr):" value={heatAmount} onChange={setHeatAmount} max={1e12} />
               <NumberInput label="热力排放因子 (tCO₂/MJ):" value={heatFactor} onChange={setHeatFactor} max={1} decimals={8} />
             </div>

@@ -47,9 +47,9 @@ export default function NewsPage() {
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex gap-5 bg-white rounded-xl shadow-sm hover:shadow-md p-4 no-underline transition-shadow"
+              className="group flex flex-col sm:flex-row gap-5 bg-white rounded-xl shadow-sm hover:shadow-md p-4 no-underline transition-shadow"
             >
-              <div className="flex-shrink-0 w-[160px] h-[120px] rounded-lg overflow-hidden bg-gradient-to-br from-[#1565A0] to-[#2B7CB8]">
+              <div className="flex-shrink-0 w-full sm:w-[160px] h-[160px] sm:h-[120px] rounded-lg overflow-hidden bg-gradient-to-br from-[#1565A0] to-[#2B7CB8]">
                 <img
                   src={article.image}
                   alt={article.title}

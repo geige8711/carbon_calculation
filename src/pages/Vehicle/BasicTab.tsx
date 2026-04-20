@@ -66,7 +66,7 @@ export default function BasicTab() {
       {/* 基准车辆参数 */}
       <div className="border border-[#e0e0e0] rounded-lg p-5">
         <h3 className="text-[#1565A0] font-bold text-sm mb-3">基准车辆参数</h3>
-        <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <SelectInput label="车辆类型:" value={store.baselineVehicleType} onChange={(v) => store.setField('baselineVehicleType', v)} options={BASELINE_VEHICLES} />
           <SelectInput label="燃料类型:" value={store.baselineFuelType} onChange={(v) => store.setField('baselineFuelType', v as FuelType)} options={['汽油', '柴油']} />
           <div className="flex items-center gap-2">
@@ -91,7 +91,7 @@ export default function BasicTab() {
       {/* 氢能车辆参数 */}
       <div className="border border-[#e0e0e0] rounded-lg p-5">
         <h3 className="text-[#1565A0] font-bold text-sm mb-3">氢能车辆参数</h3>
-        <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <SelectInput label="车辆类型:" value={store.h2VehicleType} onChange={(v) => store.setField('h2VehicleType', v)} options={H2_VEHICLES} />
           <div className="flex items-center gap-2">
             <label className="text-sm text-gray-600 whitespace-nowrap">氢耗量 (t H₂/km):</label>

@@ -38,8 +38,8 @@ export default function HomePage() {
     <div>
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-[#0D2137] via-[#1565A0] to-[#2B7CB8] text-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 pt-20 pb-28">
-          <div className="flex gap-3 mb-6">
+        <div className="max-w-7xl mx-auto px-4 pt-12 pb-20 md:pt-20 md:pb-28">
+          <div className="flex flex-wrap gap-3 mb-6">
             <span className="inline-block bg-white/15 backdrop-blur-sm border border-white/20 text-white text-xs px-3 py-1 rounded-full">
               中国特种设备检测研究院
             </span>
@@ -47,7 +47,7 @@ export default function HomePage() {
               嘉兴市长三角氢安全研究中心
             </span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6 max-w-3xl">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-3xl">
             氢能全生命周期
             <br />
             <span className="text-[#6DD5A0]">碳足迹</span>量化与低碳减排效能评估
@@ -56,7 +56,7 @@ export default function HomePage() {
             基于国家标准方法学，构建氢气制取、加注、用氢车辆全链条碳排放核算体系，
             为氢能产业低碳发展提供科学量化工具与决策支撑。
           </p>
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <Link
               to="/production"
               className="inline-block bg-[#2D8C3C] hover:bg-[#24742F] text-white px-8 py-3 rounded-lg font-medium no-underline transition-colors shadow-lg"

@@ -15,15 +15,15 @@ export default function VehiclePage() {
   const store = useVehicleStore();
 
   return (
-    <div className="flex min-h-full">
+    <div className="flex flex-col lg:flex-row min-h-full">
       {/* Left Sidebar */}
-      <aside className="w-56 shrink-0 bg-white border-r border-gray-200 py-4">
-        <nav className="space-y-1 px-3">
+      <aside className="w-full lg:w-56 shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-gray-200 py-4">
+        <nav className="flex lg:flex-col flex-row overflow-x-auto lg:overflow-visible space-y-0 lg:space-y-1 gap-1 lg:gap-0 px-3">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.path}
               to={item.path}
-              className={`block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`block whitespace-nowrap px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 item.path === '/vehicle'
                   ? 'bg-[#1565A0] text-white'
                   : 'text-gray-600 hover:bg-gray-100'
@@ -36,9 +36,9 @@ export default function VehiclePage() {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-4 md:p-6">
         {/* Breadcrumb */}
-        <nav className="text-sm text-gray-500 mb-4">
+        <nav className="hidden sm:flex text-sm text-gray-500 mb-4">
           <Link to="/" className="hover:text-[#1565A0]">首页</Link>
           <span className="mx-2">&gt;</span>
           <span>碳排放计算</span>
@@ -74,7 +74,7 @@ export default function VehiclePage() {
           {/* 计算结果 */}
           <div className="border border-[#e0e0e0] rounded-lg p-5">
             <h3 className="text-[#1565A0] font-bold text-sm mb-3">计算结果</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>基准线碳排放强度 (t CO₂/km): <span className="font-bold ml-2">{store.resultBaselineEF}</span></div>
               <div>氢能车辆碳排放强度 (t CO₂/km): <span className="font-bold ml-2">{store.resultH2EF}</span></div>
               <div>碳减排量 (t CO₂): <span className="font-bold ml-2">{store.resultReduction}</span></div>

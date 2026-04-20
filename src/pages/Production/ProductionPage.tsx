@@ -84,15 +84,15 @@ export default function ProductionPage() {
   const elecFactorDisplay = ELECTRICITY_FACTORS[store.electricityRegion];
 
   return (
-    <div className="flex min-h-full">
+    <div className="flex flex-col lg:flex-row min-h-full">
       {/* Left Sidebar */}
-      <aside className="w-56 shrink-0 bg-white border-r border-gray-200 py-4">
-        <nav className="space-y-1 px-3">
+      <aside className="w-full lg:w-56 shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-gray-200 py-4">
+        <nav className="flex lg:flex-col flex-row overflow-x-auto lg:overflow-visible space-y-0 lg:space-y-1 gap-1 lg:gap-0 px-3">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.path}
               to={item.path}
-              className={`block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`block whitespace-nowrap px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 item.path === '/production'
                   ? 'bg-[#1565A0] text-white'
                   : 'text-gray-600 hover:bg-gray-100'
@@ -105,9 +105,9 @@ export default function ProductionPage() {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-4 md:p-6">
         {/* Breadcrumb */}
-        <nav className="text-sm text-gray-500 mb-4">
+        <nav className="hidden sm:flex text-sm text-gray-500 mb-4">
           <Link to="/" className="hover:text-[#1565A0]">首页</Link>
           <span className="mx-2">&gt;</span>
           <span>碳排放计算</span>
@@ -125,6 +125,7 @@ export default function ProductionPage() {
           {/* 化石燃料燃烧 */}
           <div className="border border-[#e0e0e0] rounded-lg p-5">
             <h3 className="text-[#1565A0] font-bold text-sm mb-3">化石燃料燃烧</h3>
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-50 text-gray-500 text-xs uppercase">
@@ -157,12 +158,14 @@ export default function ProductionPage() {
                 ))}
               </tbody>
             </table>
+            </div>
             <button onClick={addFuel} className="mt-2 px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded border border-gray-300">添加燃料</button>
           </div>
 
           {/* 原料输入 */}
           <div className="border border-[#e0e0e0] rounded-lg p-5">
             <h3 className="text-[#1565A0] font-bold text-sm mb-3">原料输入</h3>
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-50 text-gray-500 text-xs uppercase">
@@ -191,13 +194,14 @@ export default function ProductionPage() {
                 ))}
               </tbody>
             </table>
+            </div>
             <button onClick={addRaw} className="mt-2 px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded border border-gray-300">添加原料</button>
           </div>
 
           {/* 电力消耗 */}
           <div className="border border-[#e0e0e0] rounded-lg p-5">
             <h3 className="text-[#1565A0] font-bold text-sm mb-3">电力消耗</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <NumberInput label="年耗电量 (kWh/yr):" value={store.electricityAmount} onChange={store.setElectricityAmount} max={1e12} />
               <div className="flex items-center gap-2">
                 <SelectInput label="电力排放因子区域:" value={store.electricityRegion} onChange={store.setElectricityRegion} options={ELECTRICITY_REGIONS} />
@@ -214,7 +218,7 @@ export default function ProductionPage() {
           {/* 热力消耗 */}
           <div className="border border-[#e0e0e0] rounded-lg p-5">
             <h3 className="text-[#1565A0] font-bold text-sm mb-3">热力消耗</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <NumberInput label="年耗热量 (MJ/yr):" value={store.heatAmount} onChange={store.setHeatAmount} max={1e12} />
               <NumberInput label="热力排放因子 (tCO₂/MJ):" value={store.heatFactor} onChange={store.setHeatFactor} max={1} decimals={8} step={0.00000001} />
             </div>
