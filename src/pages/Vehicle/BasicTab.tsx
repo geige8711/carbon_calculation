@@ -1,4 +1,3 @@
-import GroupBox from '@/components/ui/GroupBox';
 import SelectInput from '@/components/ui/SelectInput';
 import { useVehicleStore } from '@/stores/vehicleStore';
 import { UPSTREAM_FACTORS, H2_CONSUMPTION, DIESEL_DENSITY, GASOLINE_DENSITY } from '@/data/emissionFactors';
@@ -10,6 +9,8 @@ import toast from 'react-hot-toast';
 
 const BASELINE_VEHICLES = ['轻型商用车N1', '轻型商用车M2', '货车', '半挂牵引车', '客车', '城市客车'];
 const H2_VEHICLES = Object.keys(H2_CONSUMPTION);
+
+const inputClass = "border border-gray-300 rounded-md px-3 py-2 text-sm w-full focus:ring-2 focus:ring-[#1565A0] focus:border-[#1565A0] outline-none";
 
 export default function BasicTab() {
   const store = useVehicleStore();
@@ -60,11 +61,11 @@ export default function BasicTab() {
     }
   };
 
-  const inputClass = "border border-gray-300 rounded px-2 py-1.5 text-sm w-full focus:outline-none focus:ring-1 focus:ring-green-500";
-
   return (
     <div className="space-y-5">
-      <GroupBox title="基准车辆参数">
+      {/* 基准车辆参数 */}
+      <div className="border border-[#e0e0e0] rounded-lg p-5">
+        <h3 className="text-[#1565A0] font-bold text-sm mb-3">基准车辆参数</h3>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <SelectInput label="车辆类型:" value={store.baselineVehicleType} onChange={(v) => store.setField('baselineVehicleType', v)} options={BASELINE_VEHICLES} />
           <SelectInput label="燃料类型:" value={store.baselineFuelType} onChange={(v) => store.setField('baselineFuelType', v as FuelType)} options={['汽油', '柴油']} />
@@ -85,9 +86,11 @@ export default function BasicTab() {
             <input className={inputClass} value={store.baselineEnduse} onChange={(e) => store.setField('baselineEnduse', e.target.value)} />
           </div>
         </div>
-      </GroupBox>
+      </div>
 
-      <GroupBox title="氢能车辆参数">
+      {/* 氢能车辆参数 */}
+      <div className="border border-[#e0e0e0] rounded-lg p-5">
+        <h3 className="text-[#1565A0] font-bold text-sm mb-3">氢能车辆参数</h3>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <SelectInput label="车辆类型:" value={store.h2VehicleType} onChange={(v) => store.setField('h2VehicleType', v)} options={H2_VEHICLES} />
           <div className="flex items-center gap-2">
@@ -103,14 +106,14 @@ export default function BasicTab() {
             <input className={inputClass} value={store.h2Loss} onChange={(e) => store.setField('h2Loss', e.target.value)} />
           </div>
         </div>
-      </GroupBox>
+      </div>
 
       <div className="flex items-center gap-2">
         <label className="text-sm text-gray-600 whitespace-nowrap">总行驶里程 (km):</label>
-        <input className="border border-gray-300 rounded px-2 py-1.5 text-sm w-64 focus:outline-none focus:ring-1 focus:ring-green-500" value={store.mileage} onChange={(e) => store.setField('mileage', e.target.value)} />
+        <input className="border border-gray-300 rounded-md px-3 py-2 text-sm w-64 focus:ring-2 focus:ring-[#1565A0] focus:border-[#1565A0] outline-none" value={store.mileage} onChange={(e) => store.setField('mileage', e.target.value)} />
       </div>
 
-      <button onClick={calculate} className="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 font-medium">
+      <button onClick={calculate} className="bg-[#2D8C3C] hover:bg-[#35A045] text-white px-6 py-2.5 rounded-lg font-medium">
         计算碳减排量
       </button>
     </div>

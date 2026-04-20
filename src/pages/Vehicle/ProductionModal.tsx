@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import GroupBox from '@/components/ui/GroupBox';
 import NumberInput from '@/components/ui/NumberInput';
 import SelectInput from '@/components/ui/SelectInput';
 import { ELECTRICITY_FACTORS, ELECTRICITY_REGIONS } from '@/data/electricityFactors';
@@ -75,61 +74,121 @@ export default function ProductionModal({ onClose, onResult }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={onClose}>
-      <div className="bg-white rounded-lg shadow-xl w-[900px] max-h-[90vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
-        <h3 className="text-xl font-bold text-gray-800 mb-4">氢气生产碳排放核算（详细）</h3>
-
-        <NumberInput label="氢气年产量 (t H₂/yr):" value={production} onChange={setProduction} max={1e9} className="mb-4" />
-
-        <GroupBox title="化石燃料燃烧" className="mb-4">
-          {fuels.map((f, i) => (
-            <div key={i} className="grid grid-cols-5 gap-2 mb-1 items-center text-sm">
-              <SelectInput value={f.name} onChange={(v) => updateFuel(i, 'name', v)} options={['', ...FUEL_REF_NAMES]} />
-              <NumberInput value={f.consumption} onChange={(v) => updateFuel(i, 'consumption', v)} max={1e9} />
-              <NumberInput value={f.carbonContent} onChange={(v) => updateFuel(i, 'carbonContent', v)} max={10} decimals={6} step={0.001} />
-              <NumberInput value={f.oxidationRate} onChange={(v) => updateFuel(i, 'oxidationRate', v)} max={1} decimals={3} step={0.01} />
-              <button onClick={() => setFuels(fuels.filter((_, idx) => idx !== i))} className="text-red-500 text-sm">删除</button>
-            </div>
-          ))}
-          <button onClick={() => setFuels([...fuels, { name: '', consumption: 0, carbonContent: 0.75, oxidationRate: 0.99 }])} className="mt-1 text-sm text-blue-600">+ 添加燃料</button>
-        </GroupBox>
-
-        <GroupBox title="原料输入" className="mb-4">
-          {rawMaterials.map((r, i) => (
-            <div key={i} className="grid grid-cols-4 gap-2 mb-1 items-center text-sm">
-              <SelectInput value={r.name} onChange={(v) => updateRaw(i, 'name', v)} options={['', ...RAW_MATERIAL_NAMES]} />
-              <NumberInput value={r.amount} onChange={(v) => updateRaw(i, 'amount', v)} max={1e9} />
-              <NumberInput value={r.factor} onChange={(v) => updateRaw(i, 'factor', v)} max={1e9} decimals={6} />
-              <button onClick={() => setRawMaterials(rawMaterials.filter((_, idx) => idx !== i))} className="text-red-500 text-sm">删除</button>
-            </div>
-          ))}
-          <button onClick={() => setRawMaterials([...rawMaterials, { name: '', amount: 0, factor: 0 }])} className="mt-1 text-sm text-blue-600">+ 添加原料</button>
-        </GroupBox>
-
-        <GroupBox title="电力消耗" className="mb-4">
-          <div className="grid grid-cols-2 gap-3">
-            <NumberInput label="年耗电量 (kWh/yr):" value={elecAmount} onChange={setElecAmount} max={1e12} />
-            <SelectInput label="区域:" value={elecRegion} onChange={setElecRegion} options={ELECTRICITY_REGIONS} />
-            <NumberInput label="自定义因子:" value={customElec} onChange={setCustomElec} max={1} decimals={8} />
-            <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={useCustomElec} onChange={(e) => setUseCustomElec(e.target.checked)} />使用自定义</label>
-          </div>
-        </GroupBox>
-
-        <GroupBox title="热力消耗" className="mb-4">
-          <div className="grid grid-cols-2 gap-3">
-            <NumberInput label="年耗热量 (MJ/yr):" value={heatAmount} onChange={setHeatAmount} max={1e12} />
-            <NumberInput label="热力排放因子 (tCO₂/MJ):" value={heatFactor} onChange={setHeatFactor} max={1} decimals={8} />
-          </div>
-        </GroupBox>
-
-        <div className="flex items-center gap-4 mb-4">
-          <span className="text-sm">制氢碳排放因子 e_j: <span className="font-bold text-lg">{result !== null ? result.toFixed(6) : '--'}</span> t CO₂/t H₂</span>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={onClose}>
+      <div className="bg-white rounded-xl shadow-xl w-[900px] max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        {/* Blue Header */}
+        <div className="bg-[#1565A0] text-white px-6 py-4 rounded-t-xl">
+          <h3 className="text-lg font-bold">氢气生产碳排放核算（详细）</h3>
         </div>
 
-        <div className="flex gap-3">
-          <button onClick={calculate} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">计算</button>
-          <button onClick={confirm} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">确定</button>
-          <button onClick={onClose} className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">取消</button>
+        <div className="p-6 space-y-4">
+          <NumberInput label="氢气年产量 (t H₂/yr):" value={production} onChange={setProduction} max={1e9} className="mb-4" />
+
+          {/* 化石燃料燃烧 */}
+          <div className="border border-[#e0e0e0] rounded-lg p-5">
+            <h3 className="text-[#1565A0] font-bold text-sm mb-3">化石燃料燃烧</h3>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 text-gray-500 text-xs uppercase">
+                  <th className="pb-2 pt-2 px-2 text-left">燃料名称</th>
+                  <th className="pb-2 pt-2 px-2 text-left">消耗量</th>
+                  <th className="pb-2 pt-2 px-2 text-left">含碳量</th>
+                  <th className="pb-2 pt-2 px-2 text-left">碳氧化率</th>
+                  <th className="pb-2 pt-2 px-2 text-left">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {fuels.map((f, i) => (
+                  <tr key={i} className="border-t border-gray-100">
+                    <td className="py-2 pr-2">
+                      <SelectInput value={f.name} onChange={(v) => updateFuel(i, 'name', v)} options={['', ...FUEL_REF_NAMES]} />
+                    </td>
+                    <td className="py-2 pr-2">
+                      <NumberInput value={f.consumption} onChange={(v) => updateFuel(i, 'consumption', v)} max={1e9} />
+                    </td>
+                    <td className="py-2 pr-2">
+                      <NumberInput value={f.carbonContent} onChange={(v) => updateFuel(i, 'carbonContent', v)} max={10} decimals={6} step={0.001} />
+                    </td>
+                    <td className="py-2 pr-2">
+                      <NumberInput value={f.oxidationRate} onChange={(v) => updateFuel(i, 'oxidationRate', v)} max={1} decimals={3} step={0.01} />
+                    </td>
+                    <td className="py-2">
+                      <button onClick={() => setFuels(fuels.filter((_, idx) => idx !== i))} className="text-red-500 hover:text-red-700 text-sm">删除</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <button onClick={() => setFuels([...fuels, { name: '', consumption: 0, carbonContent: 0.75, oxidationRate: 0.99 }])} className="mt-2 px-3 py-1 text-sm text-[#1565A0] hover:bg-blue-50 rounded border border-blue-200">+ 添加燃料</button>
+          </div>
+
+          {/* 原料输入 */}
+          <div className="border border-[#e0e0e0] rounded-lg p-5">
+            <h3 className="text-[#1565A0] font-bold text-sm mb-3">原料输入</h3>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 text-gray-500 text-xs uppercase">
+                  <th className="pb-2 pt-2 px-2 text-left">原料名称</th>
+                  <th className="pb-2 pt-2 px-2 text-left">消耗量</th>
+                  <th className="pb-2 pt-2 px-2 text-left">碳排放因子</th>
+                  <th className="pb-2 pt-2 px-2 text-left">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rawMaterials.map((r, i) => (
+                  <tr key={i} className="border-t border-gray-100">
+                    <td className="py-2 pr-2">
+                      <SelectInput value={r.name} onChange={(v) => updateRaw(i, 'name', v)} options={['', ...RAW_MATERIAL_NAMES]} />
+                    </td>
+                    <td className="py-2 pr-2">
+                      <NumberInput value={r.amount} onChange={(v) => updateRaw(i, 'amount', v)} max={1e9} />
+                    </td>
+                    <td className="py-2 pr-2">
+                      <NumberInput value={r.factor} onChange={(v) => updateRaw(i, 'factor', v)} max={1e9} decimals={6} />
+                    </td>
+                    <td className="py-2">
+                      <button onClick={() => setRawMaterials(rawMaterials.filter((_, idx) => idx !== i))} className="text-red-500 hover:text-red-700 text-sm">删除</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <button onClick={() => setRawMaterials([...rawMaterials, { name: '', amount: 0, factor: 0 }])} className="mt-2 px-3 py-1 text-sm text-[#1565A0] hover:bg-blue-50 rounded border border-blue-200">+ 添加原料</button>
+          </div>
+
+          {/* 电力消耗 */}
+          <div className="border border-[#e0e0e0] rounded-lg p-5">
+            <h3 className="text-[#1565A0] font-bold text-sm mb-3">电力消耗</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <NumberInput label="年耗电量 (kWh/yr):" value={elecAmount} onChange={setElecAmount} max={1e12} />
+              <SelectInput label="区域:" value={elecRegion} onChange={setElecRegion} options={ELECTRICITY_REGIONS} />
+              <NumberInput label="自定义因子:" value={customElec} onChange={setCustomElec} max={1} decimals={8} />
+              <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={useCustomElec} onChange={(e) => setUseCustomElec(e.target.checked)} />使用自定义</label>
+            </div>
+          </div>
+
+          {/* 热力消耗 */}
+          <div className="border border-[#e0e0e0] rounded-lg p-5">
+            <h3 className="text-[#1565A0] font-bold text-sm mb-3">热力消耗</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <NumberInput label="年耗热量 (MJ/yr):" value={heatAmount} onChange={setHeatAmount} max={1e12} />
+              <NumberInput label="热力排放因子 (tCO₂/MJ):" value={heatFactor} onChange={setHeatFactor} max={1} decimals={8} />
+            </div>
+          </div>
+
+          {/* Result */}
+          <div className="flex items-center gap-4 bg-gray-50 rounded-lg p-4">
+            <span className="text-sm">制氢碳排放因子 e_j:</span>
+            <span className="font-bold text-lg text-[#1565A0]">{result !== null ? result.toFixed(6) : '--'}</span>
+            <span className="text-sm text-gray-500">t CO₂/t H₂</span>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-3 pt-2">
+            <button onClick={calculate} className="bg-[#2D8C3C] hover:bg-[#35A045] text-white px-6 py-2.5 rounded-lg font-medium">计算</button>
+            <button onClick={confirm} className="bg-[#1565A0] hover:bg-[#1976D2] text-white px-6 py-2.5 rounded-lg font-medium">确定</button>
+            <button onClick={onClose} className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-gray-700 border border-gray-300">取消</button>
+          </div>
         </div>
       </div>
     </div>

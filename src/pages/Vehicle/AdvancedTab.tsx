@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import GroupBox from '@/components/ui/GroupBox';
 import NumberInput from '@/components/ui/NumberInput';
 import SelectInput from '@/components/ui/SelectInput';
 import { ELECTRICITY_FACTORS, ELECTRICITY_REGIONS } from '@/data/electricityFactors';
@@ -73,37 +72,43 @@ export default function AdvancedTab() {
 
   return (
     <div className="space-y-5">
-      <GroupBox title="制氢来源（可多个）">
-        <div className="text-xs text-gray-500 grid grid-cols-6 gap-2 mb-2">
+      {/* 制氢来源 */}
+      <div className="border border-[#e0e0e0] rounded-lg p-5">
+        <h3 className="text-[#1565A0] font-bold text-sm mb-3">制氢来源（可多个）</h3>
+        <div className="text-xs text-gray-500 grid grid-cols-6 gap-2 mb-2 bg-gray-50 py-2 px-1 rounded uppercase">
           <span>来源名称</span><span>制氢碳排放因子 e_j</span><span></span><span>运输距离 (km)</span><span>氢源比例 (%)</span><span>操作</span>
         </div>
         {sources.map((s, i) => (
           <div key={i} className="grid grid-cols-6 gap-2 mb-2 items-center">
-            <input className="border border-gray-300 rounded px-2 py-1 text-sm" value={s.name} onChange={(e) => updateSource(i, 'name', e.target.value)} />
+            <input className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[#1565A0] focus:border-[#1565A0] outline-none" value={s.name} onChange={(e) => updateSource(i, 'name', e.target.value)} />
             <NumberInput value={s.ej} onChange={(v) => updateSource(i, 'ej', v)} max={1e9} decimals={6} />
-            <button onClick={() => openDetail(i)} className="px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded hover:bg-blue-100 border border-blue-200">详细...</button>
+            <button onClick={() => openDetail(i)} className="px-2 py-1.5 text-xs bg-blue-50 text-[#1565A0] rounded-md hover:bg-blue-100 border border-blue-200 font-medium">详细...</button>
             <NumberInput value={s.distance} onChange={(v) => updateSource(i, 'distance', v)} max={1e6} />
             <NumberInput value={s.ratio} onChange={(v) => updateSource(i, 'ratio', v)} max={100} decimals={2} />
             <button onClick={() => removeSource(i)} className="text-red-500 hover:text-red-700 text-sm">删除</button>
           </div>
         ))}
         <button onClick={addSource} className="mt-2 px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded border border-gray-300">添加制氢来源</button>
-      </GroupBox>
+      </div>
 
-      <GroupBox title="氢气运输参数">
+      {/* 氢气运输参数 */}
+      <div className="border border-[#e0e0e0] rounded-lg p-5">
+        <h3 className="text-[#1565A0] font-bold text-sm mb-3">氢气运输参数</h3>
         <div className="space-y-3">
           <SelectInput label="运输方式:" value={transportMode} onChange={(v) => setTransportMode(v as TransportMode)} options={['管道运输', '运氢车运输']} />
           {transportMode === '运氢车运输' && (
-            <div className="grid grid-cols-2 gap-4 pl-4 border-l-2 border-gray-200">
+            <div className="grid grid-cols-2 gap-4 pl-4 border-l-2 border-[#1565A0]/30">
               <NumberInput label="运氢车燃料消耗量 (t/km):" value={truckFuelCons} onChange={setTruckFuelCons} max={1} decimals={8} step={0.00001} />
               <NumberInput label="运氢车燃料碳排放因子 (tCO₂/t):" value={truckFuelEF} onChange={setTruckFuelEF} max={100} decimals={6} />
               <NumberInput label="单次运氢量 (t H₂):" value={singleH2} onChange={setSingleH2} max={100} />
             </div>
           )}
         </div>
-      </GroupBox>
+      </div>
 
-      <GroupBox title="氢气加注参数">
+      {/* 氢气加注参数 */}
+      <div className="border border-[#e0e0e0] rounded-lg p-5">
+        <h3 className="text-[#1565A0] font-bold text-sm mb-3">氢气加注参数</h3>
         <div className="grid grid-cols-2 gap-4">
           <NumberInput label="加氢站月耗电量 (kWh/M):" value={stationElec} onChange={setStationElec} max={1e9} />
           <div className="flex items-center gap-2">
@@ -117,18 +122,20 @@ export default function AdvancedTab() {
           </label>
           <NumberInput label="月加氢量 (t H₂/M):" value={monthlyH2} onChange={setMonthlyH2} max={1e9} />
         </div>
-      </GroupBox>
+      </div>
 
-      <GroupBox title="计算结果">
+      {/* 计算结果 */}
+      <div className="border border-[#e0e0e0] rounded-lg p-5">
+        <h3 className="text-[#1565A0] font-bold text-sm mb-3">计算结果</h3>
         <div className="space-y-2 text-sm">
           <div>各来源制氢因子 e_j (tCO₂/tH₂): <span className="font-bold ml-2">{resultEjList}</span></div>
           <div>氢气储运因子 e_t (tCO₂/(tH₂·km)): <span className="font-bold ml-2">{resultEt}</span></div>
           <div>氢气加注因子 e_r (tCO₂/tH₂): <span className="font-bold ml-2">{resultEr}</span></div>
           <div>氢气碳当量 e_H₂ (tCO₂/tH₂): <span className="font-bold ml-2">{resultEH2}</span></div>
         </div>
-      </GroupBox>
+      </div>
 
-      <button onClick={calculate} className="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 font-medium">
+      <button onClick={calculate} className="bg-[#2D8C3C] hover:bg-[#35A045] text-white px-6 py-2.5 rounded-lg font-medium">
         计算并应用到基本计算
       </button>
 

@@ -1,0 +1,158 @@
+export interface NewsArticle {
+  id: number;
+  title: string;
+  date: string;
+  summary: string;
+  category: '科研动态' | '行业资讯' | '政策法规' | '学术交流';
+  image: string;
+  url: string;
+}
+
+export const NEWS_ARTICLES: NewsArticle[] = [
+  {
+    id: 1,
+    title: '嘉兴市长三角氢安全研究中心简介',
+    date: '2024-07-12',
+    summary: '嘉兴市长三角氢安全研究中心是由中国特种设备检测研究院、嘉兴港区管委会和同济大学共同发起组建的新型研发机构，围绕制氢、储氢、运氢、用氢等重点领域开展检验检测与安全评估工作。',
+    category: '科研动态',
+    image: './news-images/news-1.jpg',
+    url: 'https://mp.weixin.qq.com/s/T9d_Hk80zrpoo2jyWknOMw',
+  },
+  {
+    id: 2,
+    title: '产教融合新篇章｜氢安全研究中心联动嘉兴南湖学院，开启沉浸式氢能研学之旅',
+    date: '2025-11-11',
+    summary: '嘉兴市长三角氢安全研究中心与嘉兴南湖学院联合共建的嘉兴市氢能现代产业学院，成功跻身浙江省"2025年省级重点支持现代产业学院建设名单"，组织为期五天的氢能产业专项培训。',
+    category: '学术交流',
+    image: './news-images/news-2.png',
+    url: 'https://mp.weixin.qq.com/s/YI1tTjrJwtKOOAQvZOOTOg',
+  },
+  {
+    id: 3,
+    title: '聚焦氢能！2025年嘉兴市氢能产业高质量发展研讨会在港区圆满落幕',
+    date: '2025-11-11',
+    summary: '2025年嘉兴市氢能产业高质量发展研讨会在嘉兴港区成功举办，来自政府、高校、科研机构与企业的嘉宾围绕"推动氢能产业创新融合，助力高质量发展"主题共商发展大计。',
+    category: '行业资讯',
+    image: './news-images/news-3.png',
+    url: 'https://mp.weixin.qq.com/s/lSaSahTS42aaDFc8qEQxtQ',
+  },
+  {
+    id: 4,
+    title: '"活力中国调研行"采访团聚焦国家市场监督管理总局重点实验室（氢能储运装备安全）',
+    date: '2025-08-22',
+    summary: '由中宣部组织的2025年"活力中国调研行"浙江主题采访活动走进嘉兴港区，来自人民日报、新华社等63名记者深入探访"东方氢港"和国家市场监管重点实验室。',
+    category: '科研动态',
+    image: './news-images/news-4.jpg',
+    url: 'https://mp.weixin.qq.com/s/gwLxG43FumdHjCmgv-qAWg',
+  },
+  {
+    id: 5,
+    title: '嘉兴市市场监督管理局党委书记、局长李陈源莅临长三角氢安全研究中心指导',
+    date: '2025-05-16',
+    summary: '嘉兴市市场监督管理局局长李陈源一行莅临长三角（嘉兴）氢能产业园，对国家市场监管重点实验室及长三角氢安全研究中心展开专题调研。',
+    category: '科研动态',
+    image: './news-images/news-5.gif',
+    url: 'https://mp.weixin.qq.com/s/-NBxHWUqp1QgW-i_cXia2w',
+  },
+  {
+    id: 6,
+    title: '携手共进，共谋氢能未来——中国特检院王军院长一行调研国家市场监管重点实验室与长三角氢安全研究中心',
+    date: '2025-04-11',
+    summary: '中国特种设备检测研究院党委书记、院长王军带队莅临国家市场监管重点实验室（氢能储运装备安全）与长三角氢安全研究中心调研指导。',
+    category: '科研动态',
+    image: './news-images/news-6.gif',
+    url: 'https://mp.weixin.qq.com/s/Ch8oq0z0MZHhdVn4cvapcw',
+  },
+  {
+    id: 7,
+    title: '聚焦氢能标准化建设 共绘产业发展新蓝图',
+    date: '2025-03-21',
+    summary: '嘉兴港区涉氢企业标准研制需求座谈会顺利召开，港区10余家涉氢企业代表与中国标准化研究院长三角分院共同探讨氢能产业标准化建设。',
+    category: '行业资讯',
+    image: './news-images/news-7.png',
+    url: 'https://mp.weixin.qq.com/s/Cqsn9dzuvQ5M0l0tQ1offw',
+  },
+  {
+    id: 8,
+    title: '氢启未来：国内首个吨级液氢eVTOL试飞成功',
+    date: '2025-01-14',
+    summary: '2025年1月9日，国内首个吨级液氢eVTOL（电动垂直起降无人机）在陕西宝鸡凤翔高新区成功试飞，集众多先进技术于一身。',
+    category: '行业资讯',
+    image: './news-images/news-8.jpg',
+    url: 'https://mp.weixin.qq.com/s/zwCDYkrsWwy1TMdkPy6-UQ',
+  },
+  {
+    id: 9,
+    title: '浙江清华长三角研究院院长黄开胜一行到访长三角氢安全研究中心',
+    date: '2025-01-09',
+    summary: '浙江清华长三角研究院党委书记、院长黄开胜及其团队到访长三角氢安全研究中心与国家市场监管重点实验室，展开深入交流与考察。',
+    category: '学术交流',
+    image: './news-images/news-9.png',
+    url: 'https://mp.weixin.qq.com/s/VtmToERCHvWBmcCbWLN-4A',
+  },
+  {
+    id: 10,
+    title: '一图读懂 |《加快工业领域清洁低碳氢应用实施方案》',
+    date: '2025-01-08',
+    summary: '工信部发布《加快工业领域清洁低碳氢应用实施方案》，到2027年清洁低碳氢在冶金、合成氨、合成甲醇等行业实现规模化应用。',
+    category: '政策法规',
+    image: './news-images/news-10.jpg',
+    url: 'https://mp.weixin.qq.com/s/GcBEQM8dzxxRMtpVOopqVA',
+  },
+  {
+    id: 11,
+    title: '《中华人民共和国能源法》2025年1月1日正式施行',
+    date: '2025-01-03',
+    summary: '《中华人民共和国能源法》正式施行，氢能首次被政府明确认定为能源，正式纳入能源管理体系，为氢能发展奠定坚实基础。',
+    category: '政策法规',
+    image: './news-images/news-11.png',
+    url: 'https://mp.weixin.qq.com/s/SdCnD2LPK4h7RciKJ_T5Wg',
+  },
+  {
+    id: 12,
+    title: '携手并进，共绘氢安全新蓝图——浙江清华长三角研究院一行莅临长三角氢安全研究中心参观交流',
+    date: '2024-11-11',
+    summary: '浙江清华长三角研究院氢能研究单位总工程师刘蜀敏一行莅临长三角氢安全研究中心，共同探讨氢能产业的未来和安全发展路径。',
+    category: '学术交流',
+    image: './news-images/news-12.png',
+    url: 'https://mp.weixin.qq.com/s/wmD9nbRu5SbcGBCSGDVWyg',
+  },
+  {
+    id: 13,
+    title: '工业和信息化部高新司柏杰副司长一行赴长三角氢安全研究中心参观交流',
+    date: '2024-10-18',
+    summary: '工业和信息化部高新司柏杰副司长一行赴长三角氢安全研究中心参观交流，深入了解氢能源安全领域的研究进展和技术创新。',
+    category: '科研动态',
+    image: './news-images/news-13.png',
+    url: 'https://mp.weixin.qq.com/s/9dI-tDQse4jyWicgzNR4ew',
+  },
+  {
+    id: 14,
+    title: '新质氢能 低碳引领 | 2024长三角（嘉兴）氢能产业招商会圆满落幕',
+    date: '2024-10-15',
+    summary: '"2024长三角（嘉兴）氢能产业招商会"在浙江乍浦经济开发区隆重举行，汇聚众多氢能领域专家学者、企业代表共话产业发展。',
+    category: '行业资讯',
+    image: './news-images/news-14.jpg',
+    url: 'https://mp.weixin.qq.com/s/KQNezL1lzHYCUJ9S9naPxA',
+  },
+  {
+    id: 15,
+    title: '2024年氢能储运装备安全——第二届技术交流会在嘉兴圆满落幕',
+    date: '2024-09-27',
+    summary: '由长三角氢安全研究中心主办的"2024年氢能储运安全——第二届交流会"在浙江嘉兴圆满落幕，国内外众多专家学者共同探讨氢能储运最新进展。',
+    category: '学术交流',
+    image: './news-images/news-15.jpg',
+    url: 'https://mp.weixin.qq.com/s/ifvsu_pb5akMSz0FhBbbLA',
+  },
+  {
+    id: 16,
+    title: '"2024年氢能储运装备安全——第二届技术交流会"会议通知',
+    date: '2024-08-02',
+    summary: '长三角氢安全研究中心定于8月30日举办"2024年氢能储运装备安全——第二届技术交流会"，邀请清华大学、浙江大学、同济大学等高校和企业参会。',
+    category: '学术交流',
+    image: './news-images/news-16.png',
+    url: 'https://mp.weixin.qq.com/s/1DEKLRVtWE55JklNgFTuiQ',
+  },
+];
+
+export const NEWS_CATEGORIES = ['全部', '科研动态', '行业资讯', '政策法规', '学术交流'] as const;
