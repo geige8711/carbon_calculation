@@ -26,14 +26,14 @@ export default function AppLayout() {
               </p>
               <div className="flex items-center gap-3 pt-2">
                 <img
-                  src="./logo-csei.png"
+                  src="/logo-csei.png"
                   alt="CSEI Logo"
-                  className="h-10 brightness-0 invert opacity-70"
+                  className="h-10 rounded bg-white/90 p-1"
                 />
                 <img
-                  src="./logo.png"
+                  src="/logo.png"
                   alt="Center Logo"
-                  className="h-10 brightness-0 invert opacity-70"
+                  className="h-10 rounded bg-white/90 p-1"
                 />
               </div>
             </div>
