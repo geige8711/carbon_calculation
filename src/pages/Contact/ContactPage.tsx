@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+const CONTACT_API =
+  'https://send-coct-email-contact-api-kdruteekle.cn-shanghai.fcapp.run';
+
 export default function ContactPage() {
   const [form, setForm] = useState({
     name: '',
@@ -8,6 +11,7 @@ export default function ContactPage() {
     email: '',
     message: '',
   });
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -15,10 +19,27 @@ export default function ContactPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('感谢您的留言，我们将尽快与您联系！');
-    setForm({ name: '', org: '', phone: '', email: '', message: '' });
+    setSubmitting(true);
+    try {
+      const res = await fetch(CONTACT_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('感谢您的留言，我们将尽快与您联系！');
+        setForm({ name: '', org: '', phone: '', email: '', message: '' });
+      } else {
+        alert(data.error || '发送失败，请稍后重试');
+      }
+    } catch {
+      alert('网络错误，请稍后重试');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const infoCards = [
@@ -142,9 +163,10 @@ export default function ContactPage() {
               </div>
               <button
                 type="submit"
-                className="w-full bg-[#2D8C3C] hover:bg-[#24742F] text-white py-3 rounded-lg font-medium transition-colors cursor-pointer border-none"
+                disabled={submitting}
+                className="w-full bg-[#2D8C3C] hover:bg-[#24742F] text-white py-3 rounded-lg font-medium transition-colors cursor-pointer border-none disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                提交留言
+                {submitting ? '发送中...' : '提交留言'}
               </button>
             </form>
           </div>
