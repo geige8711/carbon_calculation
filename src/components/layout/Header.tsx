@@ -33,7 +33,7 @@ export default function Header() {
     <header className="sticky top-0 z-50">
       {/* Main header */}
       <div className="bg-white border-b-[3px] border-[#1565A0] shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-2 sm:py-3 flex items-center justify-between">
+        <div className="w-full px-4 lg:px-8 py-2 sm:py-3 flex items-center justify-between">
           {/* Left: logos + title */}
           <Link to="/" className="flex items-center gap-2 sm:gap-3 no-underline min-w-0" onClick={closeAll}>
             <img src="/logo-csei.png" alt="CSEI" className="h-8 sm:h-[44px] w-auto shrink-0" />
