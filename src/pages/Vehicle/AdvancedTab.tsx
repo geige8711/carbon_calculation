@@ -2,10 +2,11 @@ import { useState } from 'react';
 import NumberInput from '@/components/ui/NumberInput';
 import SelectInput from '@/components/ui/SelectInput';
 import { ELECTRICITY_FACTORS, ELECTRICITY_REGIONS } from '@/data/electricityFactors';
-import { DEFAULT_H2_LOSS_RATIO } from '@/data/emissionFactors';
-import { calculateTransportFactor, calculateRefuelingFactor, calculateWeightedH2Emission } from '@/utils/calculation';
+import { DEFAULT_H2_LOSS_RATIO, DIESEL_DENSITY, GASOLINE_DENSITY } from '@/data/emissionFactors';
+import { calculateTransportFactor, calculateRefuelingFactor, calculateWeightedH2Emission, calculateEndUseEmissionFactor, lPer100kmToTPerKm } from '@/utils/calculation';
 import { useVehicleStore } from '@/stores/vehicleStore';
 import type { TransportMode } from '@/types/hydrogen';
+import type { FuelType } from '@/types/fuel';
 import ProductionModal from './ProductionModal';
 import toast from 'react-hot-toast';
 
@@ -15,8 +16,8 @@ export default function AdvancedTab() {
   const vehicleStore = useVehicleStore();
   const [sources, setSources] = useState<Source[]>([{ name: '来源1', ej: 11, distance: 100, ratio: 100 }]);
   const [transportMode, setTransportMode] = useState<TransportMode>('管道运输');
-  const [truckFuelCons, setTruckFuelCons] = useState(0.0001);
-  const [truckFuelEF, setTruckFuelEF] = useState(3.0);
+  const [truckFuelType, setTruckFuelType] = useState<FuelType>('柴油');
+  const [truckFuelConsL, setTruckFuelConsL] = useState(30);
   const [singleH2, setSingleH2] = useState(0.4);
   const [stationElec, setStationElec] = useState(50000);
   const [stationRegion, setStationRegion] = useState('全国平均');
@@ -46,9 +47,15 @@ export default function AdvancedTab() {
       const validSources = sources.filter((s) => s.ratio > 0);
       if (validSources.length === 0) { toast.error('至少需要一个有效的制氢来源（比例>0）'); return; }
 
-      const et = transportMode === '管道运输'
-        ? calculateTransportFactor('管道运输')
-        : calculateTransportFactor('运氢车运输', truckFuelCons, truckFuelEF, singleH2);
+      let et: number;
+      if (transportMode === '管道运输') {
+        et = calculateTransportFactor('管道运输');
+      } else {
+        const density = truckFuelType === '柴油' ? DIESEL_DENSITY : GASOLINE_DENSITY;
+        const fuelTPerKm = lPer100kmToTPerKm(truckFuelConsL, density);
+        const fuelEF = calculateEndUseEmissionFactor(truckFuelType);
+        et = calculateTransportFactor('运氢车运输', fuelTPerKm, fuelEF, singleH2);
+      }
 
       const elecFactor = useStationCustom ? stationCustom : (ELECTRICITY_FACTORS[stationRegion] ?? 0);
       const er = calculateRefuelingFactor(stationElec, elecFactor, monthlyH2);
@@ -98,8 +105,12 @@ export default function AdvancedTab() {
           <SelectInput label="运输方式:" value={transportMode} onChange={(v) => setTransportMode(v as TransportMode)} options={['管道运输', '运氢车运输']} />
           {transportMode === '运氢车运输' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-2 border-[#1565A0]/30">
-              <NumberInput label="运氢车燃料消耗量 (t/km):" value={truckFuelCons} onChange={setTruckFuelCons} max={1} decimals={8} step={0.00001} />
-              <NumberInput label="运氢车燃料碳排放因子 (tCO₂/t):" value={truckFuelEF} onChange={setTruckFuelEF} max={100} decimals={6} />
+              <SelectInput label="运氢车燃料类型:" value={truckFuelType} onChange={(v) => setTruckFuelType(v as FuelType)} options={['汽油', '柴油']} />
+              <div className="flex items-center text-sm text-gray-600">
+                燃料车端碳排放因子 (t CO₂/t):
+                <span className="font-bold ml-2">{calculateEndUseEmissionFactor(truckFuelType).toFixed(6)}</span>
+              </div>
+              <NumberInput label="运氢车燃料消耗量 (L/100km):" value={truckFuelConsL} onChange={setTruckFuelConsL} max={1000} decimals={2} />
               <NumberInput label="单次运氢量 (t H₂):" value={singleH2} onChange={setSingleH2} max={100} />
             </div>
           )}

@@ -7,6 +7,7 @@ import { useVehicleStore } from '@/stores/vehicleStore';
 const NAV_ITEMS = [
   { label: '氢气制取', path: '/production' },
   { label: '氢气加注', path: '/refueling' },
+  { label: '氢气运输', path: '/transport' },
   { label: '用氢车辆', path: '/vehicle' },
 ];
 

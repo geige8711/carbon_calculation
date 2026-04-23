@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 const calcSubModules = [
   { path: '/production', label: '氢气制取' },
   { path: '/refueling', label: '氢气加注' },
+  { path: '/transport', label: '氢气运输' },
   { path: '/vehicle', label: '用氢车辆' },
 ];
 
@@ -13,7 +14,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileCalcOpen, setMobileCalcOpen] = useState(false);
 
-  const isCalcActive = ['/production', '/refueling', '/vehicle'].some((p) =>
+  const isCalcActive = ['/production', '/refueling', '/transport', '/vehicle'].some((p) =>
     location.pathname.startsWith(p),
   );
   const isActive = (path: string) => location.pathname === path;
@@ -30,20 +31,6 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Top bar */}
-      <div className="bg-[#0D2137] text-white">
-        <div className="max-w-7xl mx-auto px-4 py-1.5 flex items-center justify-between text-xs sm:text-sm">
-          <span className="opacity-90 truncate">
-            国家市场监管重点实验室（氢能储运装备安全）
-          </span>
-          <div className="flex items-center gap-2 opacity-90 shrink-0">
-            <span className="cursor-pointer hover:opacity-100">登录</span>
-            <span>|</span>
-            <span className="cursor-pointer hover:opacity-100">注册</span>
-          </div>
-        </div>
-      </div>
-
       {/* Main header */}
       <div className="bg-white border-b-[3px] border-[#1565A0] shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-2 sm:py-3 flex items-center justify-between">
@@ -90,8 +77,14 @@ export default function Header() {
               )}
             </div>
             <Link to="/news" className={navLinkClass(isActive('/news'))}>新闻动态</Link>
+            <Link to="/standards" className={navLinkClass(isActive('/standards'))}>标准查询</Link>
             <Link to="/about" className={navLinkClass(isActive('/about'))}>关于我们</Link>
             <Link to="/contact" className={navLinkClass(isActive('/contact'))}>联系我们</Link>
+            <div className="flex items-center gap-2 ml-4 text-sm shrink-0">
+              <span className="cursor-pointer text-[#1A2E44] hover:text-[#1565A0]">登录</span>
+              <span className="text-gray-300">|</span>
+              <span className="cursor-pointer text-[#1A2E44] hover:text-[#1565A0]">注册</span>
+            </div>
           </nav>
 
           {/* Mobile hamburger */}
@@ -141,8 +134,14 @@ export default function Header() {
                 )}
               </div>
               <Link to="/news" onClick={closeAll} className={`block ${navLinkClass(isActive('/news'))}`}>新闻动态</Link>
+              <Link to="/standards" onClick={closeAll} className={`block ${navLinkClass(isActive('/standards'))}`}>标准查询</Link>
               <Link to="/about" onClick={closeAll} className={`block ${navLinkClass(isActive('/about'))}`}>关于我们</Link>
               <Link to="/contact" onClick={closeAll} className={`block ${navLinkClass(isActive('/contact'))}`}>联系我们</Link>
+              <div className="flex items-center gap-2 pt-2 border-t border-gray-100 text-sm">
+                <span className="cursor-pointer text-[#1A2E44]">登录</span>
+                <span className="text-gray-300">|</span>
+                <span className="cursor-pointer text-[#1A2E44]">注册</span>
+              </div>
             </div>
           </div>
         )}

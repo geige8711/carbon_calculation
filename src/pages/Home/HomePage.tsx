@@ -21,6 +21,15 @@ const modules = [
     buttonColor: 'text-[#2D8C3C]',
   },
   {
+    icon: '🚚',
+    title: '氢气运输',
+    description:
+      '覆盖管道运输与运氢车运输两种方式，精确核算氢气运输环节的碳排放因子。',
+    path: '/transport',
+    borderColor: 'border-[#6B4C9A]',
+    buttonColor: 'text-[#6B4C9A]',
+  },
+  {
     icon: '🚛',
     title: '用氢车辆',
     description:
@@ -39,11 +48,11 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-[#0D2137] via-[#1565A0] to-[#2B7CB8] text-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 pt-12 pb-20 md:pt-20 md:pb-28">
-          <div className="flex flex-wrap gap-3 mb-6">
-            <span className="inline-block bg-white/15 backdrop-blur-sm border border-white/20 text-white text-xs px-3 py-1 rounded-full">
+          <div className="flex flex-col items-start gap-2 mb-6">
+            <span className="bg-white/15 backdrop-blur-sm border border-white/20 text-white text-xs px-3 py-1 rounded-full">
               中国特种设备检测研究院
             </span>
-            <span className="inline-block bg-white/15 backdrop-blur-sm border border-white/20 text-white text-xs px-3 py-1 rounded-full">
+            <span className="bg-white/15 backdrop-blur-sm border border-white/20 text-white text-xs px-3 py-1 rounded-full">
               嘉兴市长三角氢安全研究中心
             </span>
           </div>
@@ -75,7 +84,7 @@ export default function HomePage() {
 
       {/* Modules Section */}
       <section className="max-w-7xl mx-auto px-4 -mt-10 relative z-10 mb-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {modules.map((m) => (
             <div
               key={m.path}
@@ -107,7 +116,7 @@ export default function HomePage() {
         <p className="text-gray-500 text-center mb-10 text-sm">
           依托国内权威科研机构，保障平台数据与方法学的专业性
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 gap-8 max-w-3xl mx-auto">
           {/* Org 1 */}
           <div className="bg-white rounded-xl shadow-md p-8">
             <div className="flex items-center gap-4 mb-4">
@@ -129,6 +138,14 @@ export default function HomePage() {
               中国特种设备检测研究院（简称中国特检院，CSEI）始建于1979年，是国家市场监督管理总局直属事业单位，
               承担特种设备安全与节能领域的技术检验、科学研究和标准制定工作，是我国特种设备安全技术的权威机构。
             </p>
+            <a
+              href="https://www.csei.org.cn/page/navigationListTwo?catid=11&parentid=10"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-4 text-sm text-[#1565A0] font-medium hover:underline"
+            >
+              查看更多 &rarr;
+            </a>
           </div>
           {/* Org 2 */}
           <div className="bg-white rounded-xl shadow-md p-8">
@@ -151,6 +168,14 @@ export default function HomePage() {
               嘉兴市长三角氢安全研究中心是由中国特种设备检测研究院、嘉兴港区管委会和同济大学共同发起组建的新型研发机构，
               围绕制氢、储氢、运氢、用氢等重点领域开展检验检测、安全评估与标准研制工作。
             </p>
+            <a
+              href="https://mp.weixin.qq.com/s/T9d_Hk80zrpoo2jyWknOMw"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-4 text-sm text-[#1565A0] font-medium hover:underline"
+            >
+              查看更多 &rarr;
+            </a>
           </div>
         </div>
       </section>

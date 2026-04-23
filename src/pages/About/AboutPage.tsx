@@ -31,8 +31,8 @@ export default function AboutPage() {
             },
             {
               emoji: '📋',
-              title: '国标方法学',
-              desc: '严格遵循GB/T等国家标准，确保计算方法的科学性与合规性。',
+              title: '标准方法学',
+              desc: '参考GB/T 32151、GB/T 33760、ISCC EU 205及PAS 2050等国家及国际标准，形成标准碳排放计算方法，确保计算方法的科学性和合规性。',
             },
             {
               emoji: '🏛️',
