@@ -27,8 +27,8 @@ export default function ContactPage() {
       label: '地址',
       value: '浙江省嘉兴市嘉兴港区长三角（嘉兴）氢能产业园',
     },
-    { icon: '📞', label: '电话', value: '0573-XXXXXXXX' },
-    { icon: '✉️', label: '邮箱', value: 'contact@h2-carbon.cn' },
+    { icon: '📞', label: '电话', value: '江先生，18758172900' },
+    { icon: '✉️', label: '邮箱', value: 'jiangyifan@yrhs.org.cn' },
     { icon: '🕐', label: '工作时间', value: '周一至周五 09:00 - 17:30' },
   ];
 

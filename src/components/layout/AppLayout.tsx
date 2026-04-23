@@ -22,7 +22,7 @@ export default function AppLayout() {
                 与低碳减排效能评估平台
               </h3>
               <p className="text-sm text-white/60 leading-relaxed">
-                基于国家标准方法学，为氢能产业提供全链条碳排放核算与减排效能评估服务。
+                基于标准方法学，为氢能产业提供全链条碳排放核算与减排效能评估服务。
               </p>
               <div className="flex items-center gap-3 pt-2">
                 <img
@@ -68,6 +68,22 @@ export default function AppLayout() {
                     用氢车辆
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    to="/transport"
+                    className="text-sm text-white/60 hover:text-white no-underline transition-colors"
+                  >
+                    氢气运输
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/standards"
+                    className="text-sm text-white/60 hover:text-white no-underline transition-colors"
+                  >
+                    标准查询
+                  </Link>
+                </li>
               </ul>
             </div>
 
@@ -111,7 +127,7 @@ export default function AppLayout() {
               </h4>
               <div className="space-y-3 text-sm text-white/60">
                 <p>浙江省嘉兴市嘉兴港区长三角（嘉兴）氢能产业园</p>
-                <p>contact@h2-carbon.cn</p>
+                <p>jiangyifan@yrhs.org.cn</p>
               </div>
             </div>
           </div>
