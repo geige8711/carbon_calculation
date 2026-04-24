@@ -62,7 +62,7 @@ export default function HomePage() {
             <span className="text-[#6DD5A0]">碳足迹</span>量化与低碳减排效能评估
           </h1>
           <p className="text-lg text-white/80 max-w-2xl mb-8 leading-relaxed">
-            基于国家标准方法学，构建氢气制取、加注、用氢车辆全链条碳排放核算体系，
+            基于标准方法学，构建氢气制取、加注、用氢车辆全链条碳排放核算体系，
             为氢能产业低碳发展提供科学量化工具与决策支撑。
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
