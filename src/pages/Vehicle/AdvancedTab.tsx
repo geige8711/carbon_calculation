@@ -75,8 +75,6 @@ export default function AdvancedTab() {
     }
   };
 
-  const stationFactorDisplay = ELECTRICITY_FACTORS[stationRegion];
-
   return (
     <div className="space-y-5">
       {/* 制氢来源 */}
@@ -120,18 +118,25 @@ export default function AdvancedTab() {
       {/* 氢气加注参数 */}
       <div className="border border-[#e0e0e0] rounded-lg p-5">
         <h3 className="text-[#1565A0] font-bold text-sm mb-3">氢气加注参数</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <NumberInput label="加氢站月耗电量 (kWh/M):" value={stationElec} onChange={setStationElec} max={1e9} />
-          <div className="flex items-center gap-2">
-            <SelectInput label="电力排放因子区域:" value={stationRegion} onChange={setStationRegion} options={ELECTRICITY_REGIONS} />
-            <span className="text-xs text-gray-500 whitespace-nowrap">{stationFactorDisplay?.toExponential(3)}</span>
+        <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <NumberInput label="加氢站月耗电量 (kWh/M):" value={stationElec} onChange={setStationElec} max={1e9} />
+            <NumberInput label="月加氢量 (t H₂/M):" value={monthlyH2} onChange={setMonthlyH2} max={1e9} />
           </div>
-          <NumberInput label="自定义电力因子 (tCO₂/kWh):" value={stationCustom} onChange={setStationCustom} max={1} decimals={8} step={0.00000001} />
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={useStationCustom} onChange={(e) => setUseStationCustom(e.target.checked)} />
-            使用自定义
-          </label>
-          <NumberInput label="月加氢量 (t H₂/M):" value={monthlyH2} onChange={setMonthlyH2} max={1e9} />
+          <div className="flex items-center gap-2 flex-wrap">
+            <SelectInput label="电力排放因子区域:" value={stationRegion} onChange={setStationRegion} options={ELECTRICITY_REGIONS} disabled={useStationCustom} className="flex-1 min-w-55" />
+            <div className={`flex items-center gap-1 whitespace-nowrap ${useStationCustom ? 'opacity-50' : ''}`}>
+              <span className="text-xs text-gray-600">区域因子 (tCO₂/kWh):</span>
+              <span className="text-sm font-medium text-gray-800 tabular-nums">{(ELECTRICITY_FACTORS[stationRegion] ?? 0).toFixed(7)}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 flex-wrap">
+            <label className="flex items-center gap-2 text-sm whitespace-nowrap cursor-pointer">
+              <input type="checkbox" checked={useStationCustom} onChange={(e) => setUseStationCustom(e.target.checked)} />
+              <span>使用自定义</span>
+            </label>
+            <NumberInput label="自定义电力因子 (tCO₂/kWh):" value={stationCustom} onChange={setStationCustom} max={1} decimals={8} step={0.00000001} disabled={!useStationCustom} className="flex-1 min-w-55" />
+          </div>
         </div>
       </div>
 
