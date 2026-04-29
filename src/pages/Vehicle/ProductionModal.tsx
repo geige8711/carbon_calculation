@@ -161,7 +161,13 @@ export default function ProductionModal({ onClose, onResult }: Props) {
             <h3 className="text-[#1565A0] font-bold text-sm mb-3">电力消耗</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <NumberInput label="年耗电量 (kWh/yr):" value={elecAmount} onChange={setElecAmount} max={1e12} />
-              <SelectInput label="区域:" value={elecRegion} onChange={setElecRegion} options={ELECTRICITY_REGIONS} />
+              <div className="flex items-center gap-2">
+                <SelectInput label="区域:" value={elecRegion} onChange={setElecRegion} options={ELECTRICITY_REGIONS} className="flex-1 min-w-0" />
+                <div className="flex items-center gap-1 whitespace-nowrap">
+                  <span className="text-xs text-gray-600">区域因子 (tCO₂/kWh):</span>
+                  <span className="text-sm font-medium text-gray-800 tabular-nums">{(ELECTRICITY_FACTORS[elecRegion] ?? 0).toFixed(7)}</span>
+                </div>
+              </div>
               <NumberInput label="自定义因子:" value={customElec} onChange={setCustomElec} max={1} decimals={8} />
               <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={useCustomElec} onChange={(e) => setUseCustomElec(e.target.checked)} />使用自定义</label>
             </div>
