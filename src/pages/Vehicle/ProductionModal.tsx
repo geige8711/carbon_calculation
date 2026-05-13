@@ -15,7 +15,9 @@ interface Props {
 
 export default function ProductionModal({ onClose, onResult }: Props) {
   const [production, setProduction] = useState(1000);
-  const [fuels, setFuels] = useState([{ name: '', consumption: 0, carbonContent: 0.75, oxidationRate: 0.99 }]);
+  const [fuels, setFuels] = useState([
+    { name: '', consumption: 0, carbonContent: 0.75, oxidationRate: 0.99, ncv: 0, ef: 0, unit: 't' as 't' | 'Nm³' },
+  ]);
   const [rawMaterials, setRawMaterials] = useState([
     { name: '烧碱（30%）', amount: 0, factor: 11.555 },
     { name: '新鲜水', amount: 0, factor: 0.0006 },
@@ -40,7 +42,16 @@ export default function ProductionModal({ onClose, onResult }: Props) {
       const validRaw = rawMaterials.filter((r) => r.amount > 0 && r.factor > 0);
       const ej = calculateHydrogenProductionFactor({
         production,
-        fuels: validFuels.length > 0 ? validFuels.map((f) => ({ consumption: f.consumption, carbonContent: f.carbonContent, oxidationRate: f.oxidationRate })) : undefined,
+        fuels: validFuels.length > 0
+          ? validFuels.map((f) => ({
+              name: f.name,
+              consumption: f.consumption,
+              carbonContent: f.carbonContent,
+              oxidationRate: f.oxidationRate,
+              ncv: f.ncv,
+              ef: f.ef,
+            }))
+          : undefined,
         electricityAmount: elecAmount > 0 ? elecAmount : undefined,
         electricityFactor: elecAmount > 0 ? getElecFactor() : undefined,
         heatAmount: heatAmount > 0 ? heatAmount : undefined,
@@ -60,11 +71,19 @@ export default function ProductionModal({ onClose, onResult }: Props) {
 
   const updateFuel = (i: number, field: string, value: string | number) => {
     const updated = [...fuels];
-    const item = { ...updated[i], [field]: value };
-    if (field === 'name') { const [cc, of] = getFuelDefaults(value as string); item.carbonContent = cc; item.oxidationRate = of; }
+    const item = { ...updated[i], [field]: value } as (typeof updated)[number];
+    if (field === 'name') {
+      const def = getFuelDefaults(value as string);
+      item.carbonContent = def.default_cc ?? 0;
+      item.oxidationRate = def.default_of ?? 0;
+      item.ncv = def.default_ncv ?? 0;
+      item.ef = def.default_ef ?? 0;
+      item.unit = def.unit ?? 't';
+    }
     updated[i] = item;
     setFuels(updated);
   };
+  const isFormula2 = (i: number) => (fuels[i].ncv ?? 0) > 0 && (fuels[i].ef ?? 0) > 0;
   const updateRaw = (i: number, field: string, value: string | number) => {
     const updated = [...rawMaterials];
     const item = { ...updated[i], [field]: value };
@@ -87,6 +106,10 @@ export default function ProductionModal({ onClose, onResult }: Props) {
           {/* 化石燃料燃烧 */}
           <div className="border border-[#e0e0e0] rounded-lg p-5">
             <h3 className="text-[#1565A0] font-bold text-sm mb-3">化石燃料燃烧</h3>
+            <p className="text-xs text-gray-500 mb-2">
+              系统根据所选燃料自动适配：含碳量+碳氧化率 走「公式1」，NCV+EF 走「公式2」。
+            </p>
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-50 text-gray-500 text-xs uppercase">
@@ -94,32 +117,47 @@ export default function ProductionModal({ onClose, onResult }: Props) {
                   <th className="pb-2 pt-2 px-2 text-left">消耗量</th>
                   <th className="pb-2 pt-2 px-2 text-left">含碳量</th>
                   <th className="pb-2 pt-2 px-2 text-left">碳氧化率</th>
+                  <th className="pb-2 pt-2 px-2 text-left">NCV</th>
+                  <th className="pb-2 pt-2 px-2 text-left">EF</th>
                   <th className="pb-2 pt-2 px-2 text-left">操作</th>
                 </tr>
               </thead>
               <tbody>
-                {fuels.map((f, i) => (
-                  <tr key={i} className="border-t border-gray-100">
-                    <td className="py-2 pr-2">
-                      <SelectInput value={f.name} onChange={(v) => updateFuel(i, 'name', v)} options={['', ...FUEL_REF_NAMES]} />
-                    </td>
-                    <td className="py-2 pr-2">
-                      <NumberInput value={f.consumption} onChange={(v) => updateFuel(i, 'consumption', v)} max={1e9} />
-                    </td>
-                    <td className="py-2 pr-2">
-                      <NumberInput value={f.carbonContent} onChange={(v) => updateFuel(i, 'carbonContent', v)} max={10} decimals={6} step={0.001} />
-                    </td>
-                    <td className="py-2 pr-2">
-                      <NumberInput value={f.oxidationRate} onChange={(v) => updateFuel(i, 'oxidationRate', v)} max={1} decimals={3} step={0.01} />
-                    </td>
-                    <td className="py-2">
-                      <button onClick={() => setFuels(fuels.filter((_, idx) => idx !== i))} className="text-red-500 hover:text-red-700 text-sm">删除</button>
-                    </td>
-                  </tr>
-                ))}
+                {fuels.map((f, i) => {
+                  const formula2 = isFormula2(i);
+                  return (
+                    <tr key={i} className="border-t border-gray-100">
+                      <td className="py-2 pr-2">
+                        <SelectInput value={f.name} onChange={(v) => updateFuel(i, 'name', v)} options={['', ...FUEL_REF_NAMES]} />
+                      </td>
+                      <td className="py-2 pr-2">
+                        <div className="flex items-center gap-1">
+                          <NumberInput value={f.consumption} onChange={(v) => updateFuel(i, 'consumption', v)} max={1e9} />
+                          <span className="text-xs text-gray-500 whitespace-nowrap">{f.unit ?? 't'}</span>
+                        </div>
+                      </td>
+                      <td className="py-2 pr-2">
+                        <NumberInput value={f.carbonContent} onChange={(v) => updateFuel(i, 'carbonContent', v)} max={10} decimals={6} step={0.001} disabled={formula2} />
+                      </td>
+                      <td className="py-2 pr-2">
+                        <NumberInput value={f.oxidationRate} onChange={(v) => updateFuel(i, 'oxidationRate', v)} max={1} decimals={3} step={0.01} disabled={formula2} />
+                      </td>
+                      <td className="py-2 pr-2">
+                        <NumberInput value={f.ncv} onChange={(v) => updateFuel(i, 'ncv', v)} max={10} decimals={8} step={0.00000001} disabled={!formula2} />
+                      </td>
+                      <td className="py-2 pr-2">
+                        <NumberInput value={f.ef} onChange={(v) => updateFuel(i, 'ef', v)} max={1000} decimals={4} step={0.01} disabled={!formula2} />
+                      </td>
+                      <td className="py-2">
+                        <button onClick={() => setFuels(fuels.filter((_, idx) => idx !== i))} className="text-red-500 hover:text-red-700 text-sm">删除</button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
-            <button onClick={() => setFuels([...fuels, { name: '', consumption: 0, carbonContent: 0.75, oxidationRate: 0.99 }])} className="mt-2 px-3 py-1 text-sm text-[#1565A0] hover:bg-blue-50 rounded border border-blue-200">+ 添加燃料</button>
+            </div>
+            <button onClick={() => setFuels([...fuels, { name: '', consumption: 0, carbonContent: 0.75, oxidationRate: 0.99, ncv: 0, ef: 0, unit: 't' }])} className="mt-2 px-3 py-1 text-sm text-[#1565A0] hover:bg-blue-50 rounded border border-blue-200">+ 添加燃料</button>
           </div>
 
           {/* 原料输入 */}

@@ -13,7 +13,7 @@ export default function AppLayout() {
       {/* Footer */}
       <footer className="bg-[#0D2137] text-white">
         <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-[400px_1fr_1fr_1fr_1fr] gap-3">
             {/* Col 1: Platform info */}
             <div className="space-y-4">
               <h3 className="text-lg font-bold leading-snug">
@@ -76,6 +76,15 @@ export default function AppLayout() {
                     氢气运输
                   </Link>
                 </li>
+              </ul>
+            </div>
+
+            {/* Col 3: 标准与资讯 */}
+            <div>
+              <h4 className="text-sm font-semibold mb-4 text-white/80 uppercase tracking-wider">
+                标准与资讯
+              </h4>
+              <ul className="space-y-2 list-none p-0 m-0">
                 <li>
                   <Link
                     to="/standards"
@@ -84,10 +93,18 @@ export default function AppLayout() {
                     标准查询
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    to="/news"
+                    className="text-sm text-white/60 hover:text-white no-underline transition-colors"
+                  >
+                    新闻动态
+                  </Link>
+                </li>
               </ul>
             </div>
 
-            {/* Col 3: 关于我们 */}
+            {/* Col 4: 关于我们 */}
             <div>
               <h4 className="text-sm font-semibold mb-4 text-white/80 uppercase tracking-wider">
                 关于我们
@@ -103,14 +120,6 @@ export default function AppLayout() {
                 </li>
                 <li>
                   <Link
-                    to="/news"
-                    className="text-sm text-white/60 hover:text-white no-underline transition-colors"
-                  >
-                    新闻动态
-                  </Link>
-                </li>
-                <li>
-                  <Link
                     to="/contact"
                     className="text-sm text-white/60 hover:text-white no-underline transition-colors"
                   >
@@ -120,7 +129,7 @@ export default function AppLayout() {
               </ul>
             </div>
 
-            {/* Col 4: 联系方式 */}
+            {/* Col 5: 联系方式 */}
             <div>
               <h4 className="text-sm font-semibold mb-4 text-white/80 uppercase tracking-wider">
                 联系方式

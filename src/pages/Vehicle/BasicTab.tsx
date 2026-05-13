@@ -1,6 +1,6 @@
 import SelectInput from '@/components/ui/SelectInput';
 import { useVehicleStore } from '@/stores/vehicleStore';
-import { UPSTREAM_FACTORS, H2_CONSUMPTION, DIESEL_DENSITY, GASOLINE_DENSITY } from '@/data/emissionFactors';
+import { UPSTREAM_FACTORS, H2_CONSUMPTION, FUEL_DENSITY } from '@/data/emissionFactors';
 import { calculateEndUseEmissionFactor, calculateBaselineEF, lPer100kmToTPerKm } from '@/utils/calculation';
 import { lookupFuelConsumption } from '@/utils/fuelLookup';
 import type { FuelType } from '@/types/fuel';
@@ -14,25 +14,27 @@ const inputClass = "border border-gray-300 rounded-md px-3 py-2 text-sm w-full f
 
 export default function BasicTab() {
   const store = useVehicleStore();
+  const setField = useVehicleStore((s) => s.setField);
+  const { baselineFuelType, baselineVehicleType, baselineWeight, h2VehicleType } = store;
 
   useEffect(() => {
-    const fuel = store.baselineFuelType;
-    store.setField('baselineUpstream', String(UPSTREAM_FACTORS[fuel]));
-    store.setField('baselineEnduse', calculateEndUseEmissionFactor(fuel).toFixed(6));
-  }, [store.baselineFuelType]);
+    const upstream = UPSTREAM_FACTORS[baselineFuelType];
+    setField('baselineUpstream', upstream !== undefined ? String(upstream) : '');
+    setField('baselineEnduse', calculateEndUseEmissionFactor(baselineFuelType).toFixed(6));
+  }, [baselineFuelType, setField]);
 
   useEffect(() => {
-    const w = parseFloat(store.baselineWeight);
+    const w = parseFloat(baselineWeight);
     if (!isNaN(w) && w > 0) {
-      const fc = lookupFuelConsumption(store.baselineVehicleType, store.baselineFuelType, w);
-      store.setField('baselineFuelConsumption', fc !== null ? String(fc) : '');
+      const fc = lookupFuelConsumption(baselineVehicleType, baselineFuelType, w);
+      setField('baselineFuelConsumption', fc !== null ? String(fc) : '');
     }
-  }, [store.baselineVehicleType, store.baselineFuelType, store.baselineWeight]);
+  }, [baselineVehicleType, baselineFuelType, baselineWeight, setField]);
 
   useEffect(() => {
-    const cons = H2_CONSUMPTION[store.h2VehicleType];
-    if (cons !== undefined) store.setField('h2Consumption', String(cons));
-  }, [store.h2VehicleType]);
+    const cons = H2_CONSUMPTION[h2VehicleType];
+    if (cons !== undefined) setField('h2Consumption', String(cons));
+  }, [h2VehicleType, setField]);
 
   const calculate = () => {
     try {
@@ -46,7 +48,7 @@ export default function BasicTab() {
       if ([upstream, enduse, fcL, h2Cons, h2Emission, h2Loss, mileage].some(isNaN)) {
         toast.error('请填写所有必要参数'); return;
       }
-      const density = store.baselineFuelType === '柴油' ? DIESEL_DENSITY : GASOLINE_DENSITY;
+      const density = FUEL_DENSITY[store.baselineFuelType];
       const sfcTPerKm = lPer100kmToTPerKm(fcL, density);
       const baselineEF = calculateBaselineEF(upstream, enduse, sfcTPerKm);
       const h2EF = h2Emission * (1 + h2Loss) * h2Cons;
@@ -68,7 +70,7 @@ export default function BasicTab() {
         <h3 className="text-[#1565A0] font-bold text-sm mb-3">基准车辆参数</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <SelectInput label="车辆类型:" value={store.baselineVehicleType} onChange={(v) => store.setField('baselineVehicleType', v)} options={BASELINE_VEHICLES} />
-          <SelectInput label="燃料类型:" value={store.baselineFuelType} onChange={(v) => store.setField('baselineFuelType', v as FuelType)} options={['汽油', '柴油']} />
+          <SelectInput label="燃料类型:" value={store.baselineFuelType} onChange={(v) => store.setField('baselineFuelType', v as FuelType)} options={['汽油', '柴油', '天然气（LNG）', '甲醇']} />
           <div className="flex items-center gap-2">
             <label className="text-sm text-gray-600 whitespace-nowrap">总质量 (kg):</label>
             <input className={inputClass} value={store.baselineWeight} onChange={(e) => store.setField('baselineWeight', e.target.value)} placeholder="输入车辆总质量" />

@@ -1,9 +1,10 @@
-export type FuelType = '汽油' | '柴油';
+export type FuelType = '汽油' | '柴油' | '天然气（LNG）' | '甲醇';
 
 export interface FuelParams {
-  NCV: number;  // GJ/t
-  CC: number;   // t C/GJ
-  OF: number;   // oxidation factor
+  NCV?: number;       // GJ/t
+  CC?: number;        // t C/GJ
+  OF?: number;        // oxidation factor
+  enduseEF?: number;  // 直接给定的车端碳排放因子 (t CO₂/t)，提供时优先使用
 }
 
 export interface FuelConsumptionLimit {

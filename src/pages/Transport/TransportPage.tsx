@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import NumberInput from '@/components/ui/NumberInput';
 import SelectInput from '@/components/ui/SelectInput';
 import { useTransportStore } from '@/stores/transportStore';
-import { DIESEL_DENSITY, GASOLINE_DENSITY } from '@/data/emissionFactors';
+import { FUEL_DENSITY } from '@/data/emissionFactors';
 import { calculateEndUseEmissionFactor, calculateTransportFactor, lPer100kmToTPerKm } from '@/utils/calculation';
 import type { TransportMode } from '@/types/hydrogen';
 import type { FuelType } from '@/types/fuel';
@@ -19,7 +19,7 @@ export default function TransportPage() {
   const store = useTransportStore();
 
   const fuelEF = calculateEndUseEmissionFactor(store.fuelType);
-  const density = store.fuelType === '柴油' ? DIESEL_DENSITY : GASOLINE_DENSITY;
+  const density = FUEL_DENSITY[store.fuelType];
 
   const calculate = () => {
     try {
@@ -93,7 +93,7 @@ export default function TransportPage() {
                   label="燃料类型:"
                   value={store.fuelType}
                   onChange={(v) => store.setFuelType(v as FuelType)}
-                  options={['汽油', '柴油']}
+                  options={['汽油', '柴油', '天然气（LNG）', '甲醇']}
                 />
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <span>燃料车端碳排放因子 (t CO₂/t):</span>

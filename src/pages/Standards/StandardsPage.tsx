@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
-import standardsData from '@/data/standards.json';
-import PdfViewer from '@/components/PdfViewer';
+import { useState, useMemo, useEffect, lazy, Suspense } from 'react';
+
+const PdfViewer = lazy(() => import('@/components/PdfViewer'));
 
 const PAGE_SIZE = 20;
 
@@ -209,11 +209,33 @@ export default function StandardsPage() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [preview, setPreview] = useState<Standard | null>(null);
+  const [previewMinimized, setPreviewMinimized] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [standardsData, setStandardsData] = useState<Standard[]>([]);
+
+  const openPreview = (s: Standard) => {
+    setPreview(s);
+    setPreviewMinimized(false);
+  };
+  const closePreview = () => {
+    setPreview(null);
+    setPreviewMinimized(false);
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/standards.json')
+      .then((r) => r.json())
+      .then((data: Standard[]) => {
+        if (!cancelled) setStandardsData(data);
+      })
+      .catch(() => { /* silent: list just stays empty */ });
+    return () => { cancelled = true; };
+  }, []);
 
   const filtered = useMemo(() => {
-    let results = standardsData as Standard[];
+    let results = standardsData;
 
     if (selectedCategory.length > 0) {
       results = results.filter((s) => matchesCategory(s, selectedCategory));
@@ -230,7 +252,7 @@ export default function StandardsPage() {
     }
 
     return results;
-  }, [search, selectedCategory]);
+  }, [search, selectedCategory, standardsData]);
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -384,7 +406,7 @@ export default function StandardsPage() {
                 {paged.map((standard, idx) => (
                   <div
                     key={`${standard.fileName}-${idx}`}
-                    onClick={() => setPreview(standard)}
+                    onClick={() => openPreview(standard)}
                     className="bg-white rounded-lg shadow-sm border border-gray-100 px-5 py-4 hover:shadow-md transition-shadow cursor-pointer group"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2">
@@ -436,8 +458,9 @@ export default function StandardsPage() {
       {/* Preview Modal */}
       {preview && (
         <div
-          className="fixed inset-0 z-[100] bg-black/60 flex items-center justify-center p-4"
-          onClick={() => setPreview(null)}
+          className={`fixed inset-0 z-[100] bg-black/60 flex items-center justify-center p-4 ${previewMinimized ? 'invisible pointer-events-none' : ''}`}
+          onClick={closePreview}
+          aria-hidden={previewMinimized}
         >
           <div
             className="bg-white rounded-xl shadow-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden"
@@ -454,7 +477,7 @@ export default function StandardsPage() {
                 </p>
               </div>
               <button
-                onClick={() => setPreview(null)}
+                onClick={closePreview}
                 className="ml-4 p-2 hover:bg-gray-100 rounded-lg cursor-pointer border-none bg-transparent shrink-0"
               >
                 <svg
@@ -475,7 +498,9 @@ export default function StandardsPage() {
             {/* Content */}
             <div className="flex-1 bg-gray-100 min-h-0">
               {preview.type === 'pdf' ? (
-                <PdfViewer url={preview.url} />
+                <Suspense fallback={<div className="flex items-center justify-center h-full text-gray-500">正在加载文档查看器...</div>}>
+                  <PdfViewer url={preview.url} onMinimize={() => setPreviewMinimized(true)} />
+                </Suspense>
               ) : (
                 <div className="flex flex-col items-center justify-center h-full gap-4 text-gray-500">
                   <p className="text-lg">该文件为 {preview.type.toUpperCase()} 格式</p>
@@ -491,6 +516,36 @@ export default function StandardsPage() {
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* 最小化浮动条 */}
+      {preview && previewMinimized && (
+        <div
+          className="fixed bottom-4 right-4 z-[101] bg-white rounded-xl shadow-2xl border border-gray-200 flex items-center gap-2 pl-4 pr-2 py-2 max-w-md"
+          role="dialog"
+          aria-label="已最小化的文档"
+        >
+          <svg className="w-4 h-4 text-[#1565A0] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span className="text-sm text-gray-700 truncate max-w-[200px]" title={preview.name}>{preview.name}</span>
+          <button
+            onClick={() => setPreviewMinimized(false)}
+            className="ml-2 px-3 py-1 text-xs text-white bg-[#1565A0] hover:bg-[#124f82] rounded-md cursor-pointer border-none transition-colors"
+            aria-label="还原文档"
+          >
+            还原
+          </button>
+          <button
+            onClick={closePreview}
+            className="p-1.5 hover:bg-gray-100 rounded-md cursor-pointer border-none bg-transparent"
+            aria-label="关闭文档"
+          >
+            <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
       )}
     </div>

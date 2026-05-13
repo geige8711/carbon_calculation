@@ -16,13 +16,13 @@ export default function AboutPage() {
         <h2 className="text-2xl font-bold text-[#1A2E44] text-center mb-3">
           平台介绍
         </h2>
-        <p className="text-gray-500 text-center max-w-3xl mx-auto mb-4 leading-relaxed">
+        <p className="text-gray-500 text-justify max-w-3xl mx-auto mb-4 leading-relaxed indent-[2em]">
           氢能全生命周期碳足迹量化与低碳减排效能评估平台，由中国特种设备检测研究院与嘉兴市长三角氢安全研究中心联合打造，是面向氢能产业低碳化发展的数字评估工具。
         </p>
-        <p className="text-gray-500 text-center max-w-3xl mx-auto mb-4 leading-relaxed">
+        <p className="text-gray-500 text-justify max-w-3xl mx-auto mb-4 leading-relaxed indent-[2em]">
           平台参考结合国家及国际标准碳排放计算方法，构建覆盖氢气制取、氢气运输、氢气加注、用氢车辆应用的全链条碳排放核算体系，可精准核算电解水制氢、天然气制氢、煤制氢等多元制氢工艺，以及管道运输、运氢车运输、加氢站运营等全环节的碳排放，同时通过燃料电池汽车与传统燃油汽车的对标分析，科学评估氢能车辆的碳减排效能与综合环境效益。
         </p>
-        <p className="text-gray-500 text-center max-w-3xl mx-auto mb-12 leading-relaxed">
+        <p className="text-gray-500 text-justify max-w-3xl mx-auto mb-12 leading-relaxed indent-[2em]">
           平台依托国家级科研机构的技术标准与数据优势，为氢能产业政策制定、技术路线选型、低碳项目落地、减排效能验证提供权威量化依据与专业决策支撑，助力氢能全产业链绿色低碳高质量发展。
         </p>
 
@@ -65,9 +65,9 @@ export default function AboutPage() {
             支撑单位
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
             {/* CSEI */}
-            <div className="border border-gray-100 rounded-xl p-8 shadow-sm">
+            <div className="border border-gray-100 rounded-xl p-8 shadow-sm flex flex-col">
               <div className="flex items-center gap-4 mb-5">
                 <img
                   src="./logo-csei.png"
@@ -83,7 +83,7 @@ export default function AboutPage() {
                   </p>
                 </div>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed mb-6">
+              <p className="text-sm text-gray-600 leading-relaxed mb-6 flex-1">
                 国家市场监督管理总局直属事业单位，深耕氢能储运装备安全领域，牵头建设全国首个氢能领域市场监管重点实验室，具备高压储氢装备全项检测与安全评定能力。
               </p>
               <div className="grid grid-cols-3 gap-4">
@@ -103,7 +103,7 @@ export default function AboutPage() {
             </div>
 
             {/* H2 Safety Center */}
-            <div className="border border-gray-100 rounded-xl p-8 shadow-sm">
+            <div className="border border-gray-100 rounded-xl p-8 shadow-sm flex flex-col">
               <div className="flex items-center gap-4 mb-5">
                 <img
                   src="./logo.png"
@@ -119,7 +119,7 @@ export default function AboutPage() {
                   </p>
                 </div>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed mb-6">
+              <p className="text-sm text-gray-600 leading-relaxed mb-6 flex-1">
                 由中国特种设备检测研究院、嘉兴港区管委会和同济大学共同组建的新型研发机构，专注于氢能全链条检验检测、在线监测、标准研制、技术研究等领域的专业技术支撑机构。
               </p>
               <div className="grid grid-cols-3 gap-4">

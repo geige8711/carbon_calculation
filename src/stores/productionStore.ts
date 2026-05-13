@@ -30,7 +30,9 @@ export const useProductionStore = create<ProductionState>()(
   persist(
     (set) => ({
       productionAmount: 1000,
-      fuels: [{ name: '', consumption: 0, carbonContent: 0.75, oxidationRate: 0.99 }],
+      fuels: [
+        { name: '', consumption: 0, carbonContent: 0.75, oxidationRate: 0.99, ncv: 0, ef: 0, unit: 't' },
+      ],
       rawMaterials: [
         { name: '烧碱（30%）', amount: 0, factor: 11.555 },
         { name: '新鲜水', amount: 0, factor: 0.0006 },
@@ -53,6 +55,24 @@ export const useProductionStore = create<ProductionState>()(
       setHeatFactor: (v) => set({ heatFactor: v }),
       setResult: (v) => set({ result: v }),
     }),
-    { name: 'production-store' },
+    {
+      name: 'production-store',
+      version: 2,
+      migrate: (persisted: unknown, version: number) => {
+        const state = (persisted ?? {}) as Partial<ProductionState>;
+        if (version < 2 && Array.isArray(state.fuels)) {
+          state.fuels = state.fuels.map((f) => ({
+            name: f?.name ?? '',
+            consumption: f?.consumption ?? 0,
+            carbonContent: f?.carbonContent ?? 0.75,
+            oxidationRate: f?.oxidationRate ?? 0.99,
+            ncv: 0,
+            ef: 0,
+            unit: 't',
+          }));
+        }
+        return state as ProductionState;
+      },
+    },
   ),
 );

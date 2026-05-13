@@ -4,7 +4,8 @@ import { FUEL_PARAMS } from '@/data/emissionFactors';
 
 export function calculateEndUseEmissionFactor(fuelType: FuelType): number {
   const params = FUEL_PARAMS[fuelType];
-  return params.NCV * params.CC * params.OF * (44 / 12);
+  if (params.enduseEF !== undefined) return params.enduseEF;
+  return (params.NCV ?? 0) * (params.CC ?? 0) * (params.OF ?? 0) * (44 / 12);
 }
 
 export function calculateBaselineEF(
@@ -19,9 +20,18 @@ export function lPer100kmToTPerKm(lPer100km: number, densityKgPerL: number): num
   return (lPer100km * densityKgPerL) / 100 / 1000;
 }
 
+export interface FuelCalcInput {
+  consumption: number;
+  carbonContent?: number;
+  oxidationRate?: number;
+  ncv?: number;
+  ef?: number;
+  name?: string;
+}
+
 export function calculateHydrogenProductionFactor(params: {
   production: number;
-  fuels?: { consumption: number; carbonContent: number; oxidationRate: number }[];
+  fuels?: FuelCalcInput[];
   electricityAmount?: number;
   electricityFactor?: number;
   heatAmount?: number;
@@ -34,8 +44,22 @@ export function calculateHydrogenProductionFactor(params: {
 
   if (params.fuels) {
     for (const fuel of params.fuels) {
-      if (fuel.consumption > 0) {
-        totalEmission += fuel.consumption * fuel.carbonContent * fuel.oxidationRate * (44 / 12);
+      if (fuel.consumption <= 0) continue;
+      const hasFormula2 = (fuel.ncv ?? 0) > 0 && (fuel.ef ?? 0) > 0;
+      const hasFormula1 = (fuel.carbonContent ?? 0) > 0 && (fuel.oxidationRate ?? 0) > 0;
+      if (hasFormula2) {
+        // 公式2：消耗量 × 低位发热量 × 碳排放因子
+        totalEmission += fuel.consumption * (fuel.ncv as number) * (fuel.ef as number);
+      } else if (hasFormula1) {
+        // 公式1：消耗量 × 含碳量 × 碳氧化率 × 44/12
+        totalEmission +=
+          fuel.consumption *
+          (fuel.carbonContent as number) *
+          (fuel.oxidationRate as number) *
+          (44 / 12);
+      } else {
+        const label = fuel.name ? `「${fuel.name}」` : '';
+        throw new Error(`化石燃料${label}参数不完整：需提供 (含碳量+碳氧化率) 或 (NCV+EF)`);
       }
     }
   }

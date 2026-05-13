@@ -3,8 +3,11 @@ export type TransportMode = '管道运输' | '运氢车运输';
 export interface FuelEntry {
   name: string;
   consumption: number;
-  carbonContent: number;
-  oxidationRate: number;
+  carbonContent: number;     // 公式1：含碳量 tC/t
+  oxidationRate: number;     // 公式1：碳氧化率
+  ncv: number;               // 公式2：低位发热量 TJ/t 或 TJ/Nm³
+  ef: number;                // 公式2：碳排放因子 tCO₂/TJ
+  unit: 't' | 'Nm³';         // 消耗量单位
 }
 
 export interface RawMaterialEntry {
