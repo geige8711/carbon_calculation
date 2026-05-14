@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { NEWS_ARTICLES } from '@/data/newsArticles';
+import type { NewsArticle } from '@/data/newsArticles';
+import { fetchNews } from '@/data/loadNews';
 
 const modules = [
   {
@@ -41,7 +43,17 @@ const modules = [
 ];
 
 export default function HomePage() {
-  const latestNews = NEWS_ARTICLES.slice(0, 3);
+  const [latestNews, setLatestNews] = useState<NewsArticle[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchNews().then((data) => {
+      if (!cancelled) setLatestNews(data.slice(0, 3));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div>

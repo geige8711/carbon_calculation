@@ -1,13 +1,29 @@
-import { useState } from 'react';
-import { NEWS_ARTICLES, NEWS_CATEGORIES } from '@/data/newsArticles';
+import { useEffect, useState } from 'react';
+import { NEWS_CATEGORIES, type NewsArticle } from '@/data/newsArticles';
+import { fetchNews } from '@/data/loadNews';
 
 export default function NewsPage() {
   const [activeCategory, setActiveCategory] = useState<string>('全部');
+  const [articles, setArticles] = useState<NewsArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchNews().then((data) => {
+      if (!cancelled) {
+        setArticles(data);
+        setLoading(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const filteredArticles =
     activeCategory === '全部'
-      ? NEWS_ARTICLES
-      : NEWS_ARTICLES.filter((a) => a.category === activeCategory);
+      ? articles
+      : articles.filter((a) => a.category === activeCategory);
 
   return (
     <div>
@@ -72,7 +88,11 @@ export default function NewsPage() {
           ))}
         </div>
 
-        {filteredArticles.length === 0 && (
+        {loading && (
+          <div className="text-center py-20 text-gray-400">正在加载新闻...</div>
+        )}
+
+        {!loading && filteredArticles.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             暂无该分类下的新闻
           </div>
