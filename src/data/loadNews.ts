@@ -2,8 +2,10 @@
 import type { NewsArticle } from './newsArticles';
 import { NEWS_ARTICLES } from './newsArticles';
 
+// OSS 预签名 URL（到 2036-04-21 过期，与 standards 文件一致的签名机制）
+// 签名授权任意 GET，内容动态：FC 每周日改写 articles.json，浏览器始终拿到最新版
 const ARTICLES_URL =
-  'https://yrhsl.oss-cn-shanghai.aliyuncs.com/news/articles.json';
+  'https://yrhsl.oss-cn-shanghai.aliyuncs.com/news%2Farticles.json?Expires=2092341618&OSSAccessKeyId=LTAI5tF6wSBmj8bC79j4SwZB&Signature=PqtfjJ0NpjIRJzTIK%2FtSDKuLEOU%3D';
 
 export async function fetchNews(): Promise<NewsArticle[]> {
   try {
