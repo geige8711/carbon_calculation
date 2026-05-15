@@ -7,6 +7,16 @@ import { NEWS_ARTICLES } from './newsArticles';
 const ARTICLES_URL =
   'https://yrhsl.oss-cn-shanghai.aliyuncs.com/news%2Farticles.json?Expires=2092341618&OSSAccessKeyId=LTAI5tF6wSBmj8bC79j4SwZB&Signature=PqtfjJ0NpjIRJzTIK%2FtSDKuLEOU%3D';
 
+// 前端隐藏的文章标题（精确匹配，trim 后比较）。
+// 后端 sync 是 mirror/append 模式无法永久剔除某条；用前端黑名单作为最终展示控制。
+const HIDDEN_TITLES: ReadonlySet<string> = new Set([
+  '嘉兴市长三角氢安全研究中心简介',
+]);
+
+function isVisible(a: NewsArticle): boolean {
+  return !HIDDEN_TITLES.has(a.title.trim());
+}
+
 export async function fetchNews(): Promise<NewsArticle[]> {
   try {
     const r = await fetch(ARTICLES_URL, { cache: 'default' });
@@ -15,10 +25,10 @@ export async function fetchNews(): Promise<NewsArticle[]> {
     if (!Array.isArray(data) || data.length === 0) {
       throw new Error('OSS articles.json 为空或格式不对');
     }
-    return data as NewsArticle[];
+    return (data as NewsArticle[]).filter(isVisible);
   } catch (e) {
     // 静默回退：浏览器控制台留 warn，UI 用静态数据
     console.warn('[loadNews] 拉取 OSS 失败，回退到内置数据:', e);
-    return NEWS_ARTICLES;
+    return NEWS_ARTICLES.filter(isVisible);
   }
 }
